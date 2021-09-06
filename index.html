@@ -1,0 +1,162 @@
+<html>
+<head>
+<!-- FastSpring header script  -->
+<script
+    id="fsc-api"
+    src="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/0.8.5/fastspring-builder.min.js"
+    type="text/javascript"
+    data-storefront="https://nadyatest2store.test.qa2.onfastspring.com/"
+    data-access-key="GFYIOMV3R4SV5FX6F8WGHG"
+    data-data-callback="dataCallback"
+    data-continuous="true">
+</script>
+
+
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin:20px;
+  padding:20px;
+}
+
+a {
+    font-weight: bold;
+    font-size: 120%;
+    color: #337ab7; 
+}
+a:hover {
+  color: #23527C;
+}
+
+.logo {
+    width: 60%;
+    height: 50%;
+    margin-left: 20px;
+}
+
+span.product-name {
+  font-weight: bold;
+  font-size: 120%;
+}
+
+span.price {
+  color: forestgreen;
+  font-size: 120%;
+}
+
+button.buyNowButton {
+  width: 125px;
+  height: 30px;
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 20% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  border-radius: 25px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+  
+<script type="text/javascript">
+	function pushToFastSpring() {
+
+	    // Retrieve the customer data from the web page
+
+	    var firstName = document.getElementById("fname").value;
+	    var lastName = document.getElementById("lname").value;
+	    var emailAddress = document.getElementById("email").value;
+	    var discountPercent = document.getElementById("customDiscount").value;
+
+	    // Reset the contents of any pre-existing order session
+
+	    fastspring.builder.reset();
+
+	    // Create and pass a payload containing information about the current order session, including the customer data. This will hide the fields that are already populated.
+
+	    // Documentation: https://fastspring.com/docs/passing-sensitive-data-with-secure-requests/
+
+	    // For this demo concerning TNP-107095 we are passing a discount % to the order session.
+
+	    fastspring.builder.secure({
+		"contact": {
+		    "email": emailAddress,
+		    "firstName": firstName,
+		    "lastName": lastName,
+		    "country": "AT",
+		},
+		"language": "EN",
+		"items": [{
+		    "product": "nadya-prod-2",
+		    "quantity": 1,
+		    "pricing": {
+			"discountType": "percent",
+			"quantityDiscounts": {
+			    1: discountPercent,
+          2: 30
+			}
+		    }
+		}]
+	    });
+
+	    // Launch the checkout.
+	    fastspring.builder.checkout();
+	}
+</script>
+				       
+  <div class="column" style="background-color: whiteSmoke; padding:20px; border-radius: 25px;"> 
+
+    <!-- Enter the customer details for demo purposes-->
+    <form>
+      <label for="fname">First name:</label>
+      <input type="text" id="fname" name="fname" value="Juan"><br><br>
+      <label for="lname">Last name:</label>
+      <input type="text" id="lname" name="lname" value="Andrade"><br><br>
+
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" value="jmogollon+123@fastspring.com"><br><br>
+      
+      <!-- Discount amount to be applied to the order session for TNP-107095 -->
+      <label for="customDiscount">Discount to Apply:</label>
+      <input type="text" id="customDiscount" name="customDiscount" value="10">%<br><br>
+    </form>
+
+    <!-- Call a custom function to prepopulate the order session and launch the checkout -->
+    <button onclick="pushToFastSpring();">Buy Now</button>
+
+  </div>
+  
+
+  
+</body>
+</html>
