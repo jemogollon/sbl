@@ -11,15 +11,25 @@
             script.setAttribute('data-access-key', document.getElementById('dataAccessKey').value);
             script.setAttribute('data-continuous', 'true');
             script.setAttribute('data-data-callback', 'dataCallback');
+            script.setAttribute('data-error-callback', 'dataErrorCallback');
             head.appendChild(script);
           }
 
           function dataCallback(payload) {
-            if (payload) {
-              document.getElementById('loadStorefront').style.display = 'none';
-              document.getElementById('secureCheckout').style.display = 'inline-block';
-              document.getElementById('paymentCheckout').style.display = 'inline-block';
+            document.getElementById('loadStorefront').style.display = 'none';
+            document.getElementById('secureCheckout').style.display = 'inline-block';
+            document.getElementById('paymentCheckout').style.display = 'inline-block';
+            document.getElementById('errorMessage').style.display = 'none';
+          }
+
+          function dataErrorCallback(errorCode, errorMessage) {
+            let message = "couldn't load the storefront, reload the page and try again";
+
+            if (errorMessage != null && errorMessage != undefined && errorMessage.length > 0) {
+              message = errorMessage;
             }
+            document.getElementById('errorMessage').innerHTML = "Error: " + message;
+            document.getElementById('errorMessage').style.display = 'inline-block';
           }
 
           function secureCheckout() {
@@ -51,7 +61,7 @@
               "hideOtherPaymentMethods": hidePaymentMethods
             });
 
-            fastspring.builder.checkout();
+            fastspring.builder.checkout(dataCallback());
           }
 
           function builderPaymentCheckout() {
@@ -64,7 +74,7 @@
               "country": document.getElementById("country").value,
               "postalCode": document.getElementById('postalCode').value
             });
-            fastspring.builder.payment(document.getElementById("paymentMethod").value, document.getElementById("hidePaymentMethods").checked);
+            fastspring.builder.payment(document.getElementById("paymentMethod").value, document.getElementById("hidePaymentMethods").checked, dataCallback());
           }
         </script>
     </head>
@@ -106,7 +116,9 @@
             </form>
             <button id="loadStorefront" onclick="loadStorefront()">Load Storefront</button>
             <button id="secureCheckout" onclick="secureCheckout()" style="display:none;">Secure Checkout</button>
-            <button id="paymentCheckout" onclick="builderPaymentCheckout()" style="display:none; margin-left: 8px;">Builder.Payment Checkout</button>
+            <button id="paymentCheckout" onclick="builderPaymentCheckout()" style="display:none; margin-left: 8px;">Builder.Payment Checkout</button><br>
+
+            <p id="errorMessage" style="color: red;margin-top:30px;font-size:17px;display:none;"></p>
         </div>
         <div id="fsc-embedded-checkout-container" style="width:900px;margin-left:60px; float:left;">
         </div>
