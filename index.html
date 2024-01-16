@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <script type="text/javascript">
+          function loadStorefront() {
+            let head= document.getElementsByTagName('head')[0];
+            let script= document.createElement('script');
+            script.id = 'fsc-api';
+            script.type= 'text/javascript';
+            script.src= document.getElementById('sblVersion').value;
+            script.setAttribute('data-storefront', document.getElementById('storefrontURL').value);
+            script.setAttribute('data-access-key', document.getElementById('dataAccessKey').value);
+            script.setAttribute('data-continuous', 'true');
+            script.setAttribute('data-data-callback', 'dataCallback');
+            head.appendChild(script);
+          }
+
+          function dataCallback(payload) {
+            if (payload) {
+              document.getElementById('loadStorefront').style.display = 'none';
+              document.getElementById('secureCheckout').style.display = 'inline-block';
+              document.getElementById('paymentCheckout').style.display = 'inline-block';
+            }
+          }
+
+          function secureCheckout() {
+            fastspring.builder.reset();
+
+            let firstName = document.getElementById("fname").value;
+            let lastName = document.getElementById("lname").value;
+            let emailAddress = document.getElementById("email").value;
+            let product = document.getElementById("product").value;
+            let paymentMethod = document.getElementById("paymentMethod").value;
+            let hidePaymentMethods = document.getElementById("hidePaymentMethods").checked;
+            let country = document.getElementById("country").value;
+            let postalCode = document.getElementById('postalCode').value;
+
+            fastspring.builder.secure({
+              "contact": {
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": emailAddress,
+                "country": country,
+                "postalCode": postalCode
+              },
+              "language": "EN",
+              "items": [{
+                "product": product,
+                "quantity": 1
+              }],
+              "paymentMethod": paymentMethod,
+              "hideOtherPaymentMethods": hidePaymentMethods
+            });
+
+            fastspring.builder.checkout();
+          }
+
+          function builderPaymentCheckout() {
+            fastspring.builder.reset();
+            fastspring.builder.add(document.getElementById("product").value);
+            fastspring.builder.recognize({
+              "firstName": document.getElementById("fname").value,
+              "lastName": document.getElementById("lname").value,
+              "email": document.getElementById("email").value,
+              "country": document.getElementById("country").value,
+              "postalCode": document.getElementById('postalCode').value
+            });
+            fastspring.builder.payment(document.getElementById("paymentMethod").value, document.getElementById("hidePaymentMethods").checked);
+          }
+        </script>
+    </head>
+    <body>
+        <div class="column" style="background-color: whiteSmoke; padding:20px; border-radius: 25px;float:left;">
+            <form>
+                <label for="sblVersion">SBL Version:</label>
+                <input type="text" id="sblVersion" name="sblVersion" style="width:540px;" value="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/TNP-23597/fastspring-builder.min.js"><br><br>
+
+                <label for="storefrontURL">Storefront URL:</label>
+                <input type="text" id="storefrontURL" name="storefrontURL" style="width:460px;"><br><br>
+
+                <label for="dataAccessKey">Data access key:</label>
+                <input type="text" id="dataAccessKey" name="dataAccessKey" style="width:240px;" ><br><br>
+
+                <label for="fname">First name:</label>
+                <input type="text" id="fname" name="fname" value="Juan"><br><br>
+
+                <label for="lname">Last name:</label>
+                <input type="text" id="lname" name="lname" value="Andrade"><br><br>
+
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" style="width:340px;" value="@fastspring.com"><br><br>
+
+                <label for="product">Product:</label>
+                <input type="text" id="product" name="product"><br><br>
+
+                <label for="paymentMethod">Payment Method:</label>
+                <input type="text" id="paymentMethod" name="paymentMethod" value="card"><br><br>
+
+                <label for="hidePaymentMethods">Hide other payment methods:</label>
+                <input type="checkbox" id="hidePaymentMethods" name="hidePaymentMethods"><br><br>
+
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" style="width:40px;" value="US"><br><br>
+
+                <label for="postalCode">Postal Code:</label>
+                <input type="text" id="postalCode" name="postalCode" style="width:80px;"><br><br>
+            </form>
+            <button id="loadStorefront" onclick="loadStorefront()">Load Storefront</button>
+            <button id="secureCheckout" onclick="secureCheckout()" style="display:none;">Secure Checkout</button>
+            <button id="paymentCheckout" onclick="builderPaymentCheckout()" style="display:none; margin-left: 8px;">Builder.Payment Checkout</button>
+        </div>
+        <div id="fsc-embedded-checkout-container" style="width:900px;margin-left:60px; float:left;">
+        </div>
+    </body>
+</html>
