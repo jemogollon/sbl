@@ -42,6 +42,7 @@
       }
 
       function secureCheckout() {
+        localStorage.clear();
         fastspring.builder.reset();
 
         let firstName = document.getElementById("fname").value;
@@ -84,6 +85,7 @@
       }
 
       function insecureCheckout() {
+        localStorage.clear();
         fastspring.builder.reset();
         let products = document.getElementsByClassName('product');
 
