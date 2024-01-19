@@ -59,10 +59,7 @@
                 "postalCode": postalCode
               },
               "language": "EN",
-              "items": [{
-                "product": product,
-                "quantity": 1
-              }],
+              "items": getProductsArray(),
               "paymentMethod": paymentMethod,
               "hideOtherPaymentMethods": hidePaymentMethods
             };
@@ -123,7 +120,7 @@
             let productsArray = [];
 
             for (let i = 0; i < products.length; ++i) {
-                productsArray[i] = products[i].value;
+                productsArray[i] = {"product": products[i].value};
             }
             return productsArray;
           }
