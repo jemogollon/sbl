@@ -1,178 +1,197 @@
 <html>
-    <head>
-        <script type="text/javascript">
-          let productNumber = 2;
+<head>
+    <script type="text/javascript">
+      let productNumber = 2;
 
-          function loadStorefront() {
-            let head = document.getElementsByTagName('head')[0];
-            let script = document.createElement('script');
-            script.id = 'fsc-api';
-            script.type = 'text/javascript';
-            script.src = document.getElementById('sblVersion').value;
-            script.setAttribute('data-storefront', document.getElementById('storefrontURL').value);
-            script.setAttribute('data-access-key', document.getElementById('dataAccessKey').value);
-            script.setAttribute('data-continuous', 'true');
-            script.setAttribute('data-data-callback', 'dataCallback');
-            script.setAttribute('data-error-callback', 'dataErrorCallback');
-            head.appendChild(script);
-          }
+      function loadStorefront() {
+        localStorage.clear();
+        let head = document.getElementsByTagName('head')[0];
+        let script = document.createElement('script');
+        script.id = 'fsc-api';
+        script.type = 'text/javascript';
+        script.src = document.getElementById('sblVersion').value;
+        script.setAttribute('data-storefront', document.getElementById('storefrontURL').value);
+        script.setAttribute('data-access-key', document.getElementById('dataAccessKey').value);
+        script.setAttribute('data-continuous', 'true');
+        script.setAttribute('data-data-callback', 'dataCallback');
+        script.setAttribute('data-error-callback', 'dataErrorCallback');
+        head.appendChild(script);
+      }
 
-          function dataCallback(payload) {
-            document.getElementById('loadStorefront').style.display = 'none';
-            document.getElementById('sblVersion').disabled = true;
-            document.getElementById('storefrontURL').disabled = true;
-            document.getElementById('dataAccessKey').disabled = true;
-            document.getElementById('addProduct').style.display = 'inline-block';
-            document.getElementById('secureCheckout').style.display = 'inline-block';
-            document.getElementById('paymentCheckout').style.display = 'inline-block';
-            document.getElementById('errorMessage').style.display = 'none';
-          }
+      function dataCallback(payload) {
+        document.getElementById('loadStorefront').style.display = 'none';
+        document.getElementById('sblVersion').disabled = true;
+        document.getElementById('storefrontURL').disabled = true;
+        document.getElementById('dataAccessKey').disabled = true;
+        document.getElementById('addProduct').style.display = 'inline-block';
+        document.getElementById('secureCheckout').style.display = 'inline-block';
+        document.getElementById('paymentCheckout').style.display = 'inline-block';
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('fsc-embedded-checkout-container').style.display = 'inline-block';
+      }
 
-          function dataErrorCallback(errorCode, errorMessage) {
-            let message = "couldn't load the storefront, reload the page and try again";
+      function dataErrorCallback(errorCode, errorMessage) {
+        let message = "couldn't load the storefront, reload the page and try again";
 
-            if (errorMessage != null && errorMessage != undefined && errorMessage.length > 0) {
-              message = errorMessage;
-            }
-            document.getElementById('errorMessage').innerHTML = "Error: " + message;
-            document.getElementById('errorMessage').style.display = 'inline-block';
-          }
+        if (errorMessage != null && errorMessage != undefined && errorMessage.length > 0) {
+          message = errorMessage;
+        }
+        document.getElementById('errorMessage').innerHTML = "Error: " + message;
+        document.getElementById('errorMessage').style.display = 'inline-block';
+        document.getElementById('fsc-embedded-checkout-container').style.display = 'none';
+      }
 
-          function secureCheckout() {
-            fastspring.builder.reset();
+      function secureCheckout() {
+        fastspring.builder.reset();
 
-            let firstName = document.getElementById("fname").value;
-            let lastName = document.getElementById("lname").value;
-            let emailAddress = document.getElementById("email").value;
-            let product = document.getElementById("product1").value;
-            let paymentMethod = document.getElementById("paymentMethod").value;
-            let hidePaymentMethods = document.getElementById("hidePaymentMethods").checked;
-            let country = document.getElementById("country").value;
-            let postalCode = document.getElementById('postalCode').value;
+        let firstName = document.getElementById("fname").value;
+        let lastName = document.getElementById("lname").value;
+        let emailAddress = document.getElementById("email").value;
+        let product = document.getElementById("product1").value;
+        let paymentMethod = document.getElementById("paymentMethod").value;
+        let hidePaymentMethods = document.getElementById("hidePaymentMethods").checked;
+        let country = document.getElementById("country").value;
+        let postalCode = document.getElementById('postalCode').value;
 
-              let payload = {
-              "contact": {
-                "firstName": firstName,
-                "lastName": lastName,
-                "email": emailAddress,
-                "country": country,
-                "postalCode": postalCode
-              },
-              "language": "EN",
-              "items": getProductsArray(),
-              "paymentMethod": paymentMethod,
-              "hideOtherPaymentMethods": hidePaymentMethods
-            };
+        let payload = {
+          "contact": {
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": emailAddress,
+            "country": country,
+            "postalCode": postalCode
+          },
+          "language": "EN",
+          "items": getProductsArray(),
+          "paymentMethod": paymentMethod,
+          "hideOtherPaymentMethods": hidePaymentMethods
+        };
 
-              fetch('https://qa-apis.fastspring.com/address/encrypt',  {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(payload),
-            }).then(response => response.json())
-              .then(json => {
-                console.log(json);
-                fastspring.builder.secure(json.response.securePayload, json.response.secureKey);
-                fastspring.builder.checkout();
-              })
-              .catch(err => console.log(err));
-          }
+        fetch('https://qa-apis.fastspring.com/address/encrypt',  {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload),
+        }).then(response => response.json())
+          .then(json => {
+            console.log(json);
+            fastspring.builder.secure(json.response.securePayload, json.response.secureKey);
+            fastspring.builder.checkout();
+            fastspring.builder.update(product, 1);
+          })
+          .catch(err => console.log(err));
+      }
 
-          function insecureCheckout() {
-            fastspring.builder.reset();
-            let products = document.getElementsByClassName('product');
+      function insecureCheckout() {
+        fastspring.builder.reset();
+        let products = document.getElementsByClassName('product');
 
-            for (let i = 0; i < products.length; ++i) {
-              fastspring.builder.add(products[i].value);
-            }
+        for (let i = 0; i < products.length; ++i) {
+          fastspring.builder.add(products[i].value);
+        }
 
-            fastspring.builder.recognize({
-              "firstName": document.getElementById("fname").value,
-              "lastName": document.getElementById("lname").value,
-              "email": document.getElementById("email").value,
-              "country": document.getElementById("country").value,
-              "postalCode": document.getElementById('postalCode').value
-            });
-            fastspring.builder.payment(document.getElementById("paymentMethod").value, document.getElementById("hidePaymentMethods").checked);
-          }
+        fastspring.builder.recognize({
+          "firstName": document.getElementById("fname").value,
+          "lastName": document.getElementById("lname").value,
+          "email": document.getElementById("email").value,
+          "country": document.getElementById("country").value,
+          "postalCode": document.getElementById('postalCode').value
+        });
+        fastspring.builder.payment(document.getElementById("paymentMethod").value, document.getElementById("hidePaymentMethods").checked);
+      }
 
-          function addProduct() {
-            let productContainer = document.getElementById('product-container');
-            let productLabel = document.createElement('label');
-            productLabel.setAttribute('for', 'product' + productNumber);
-            productLabel.innerHTML = 'Product ' + productNumber + ': ';
-            productContainer.appendChild(productLabel);
+      function addProduct() {
+        let productContainer = document.getElementById('product-container');
+        let productLabel = document.createElement('label');
+        productLabel.setAttribute('for', 'product' + productNumber);
+        productLabel.innerHTML = 'Product ' + productNumber + ': ';
+        productContainer.appendChild(productLabel);
 
-            let productInput = document.createElement('input');
-            productInput.id = 'product' + productNumber;
-            productInput.name = 'product' + productNumber;
-            productInput.className = 'product';
-            productContainer.appendChild(productInput);
+        let productInput = document.createElement('input');
+        productInput.id = 'product' + productNumber;
+        productInput.name = 'product' + productNumber;
+        productInput.className = 'product';
+        productContainer.appendChild(productInput);
 
-            productContainer.appendChild(document.createElement('br'));
-            productContainer.appendChild(document.createElement('br'));
-            productNumber++;
-          }
+        productContainer.appendChild(document.createElement('br'));
+        productContainer.appendChild(document.createElement('br'));
+        productNumber++;
+      }
 
-          function getProductsArray() {
-            let products = document.getElementsByClassName('product');
-            let productsArray = [];
+      function getProductsArray() {
+        let products = document.getElementsByClassName('product');
+        let productsArray = [];
 
-            for (let i = 0; i < products.length; ++i) {
-                productsArray[i] = {"product": products[i].value};
-            }
-            return productsArray;
-          }
-        </script>
-    </head>
-    <body>
-        <div class="column" style="background-color: whiteSmoke; padding:20px; border-radius: 25px;float:left;">
-            <form>
-                <label id="sbl-version-label" for="sblVersion">SBL Version:</label>
-                <input type="text" id="sblVersion" name="sblVersion" style="width:540px;" value="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/TNP-23597/fastspring-builder.min.js"><br><br>
+        for (let i = 0; i < products.length; ++i) {
+          productsArray[i] = {"product": products[i].value};
+        }
+        return productsArray;
+      }
+    </script>
+</head>
+<body>
+<div class="column" style="background-color: whiteSmoke; padding:20px; border-radius: 25px;float:left;">
+    <form>
+        <label id="sbl-version-label" for="sblVersion">SBL Version:</label>
+        <input type="text" id="sblVersion" name="sblVersion" style="width:540px;" value="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/TNP-23597/fastspring-builder.min.js"><br><br>
 
-                <label id="storefront-url-label" for="storefrontURL">Storefront URL:</label>
-                <input type="text" id="storefrontURL" name="storefrontURL" style="width:460px;"><br><br>
+        <label id="storefront-url-label" for="storefrontURL">Storefront URL:</label>
+        <input type="text" id="storefrontURL" name="storefrontURL" style="width:460px;"><br><br>
 
-                <label id="data-access-key-label" for="dataAccessKey">Data access key:</label>
-                <input type="text" id="dataAccessKey" name="dataAccessKey" style="width:240px;" ><br><br>
+        <label id="data-access-key-label" for="dataAccessKey">Data access key:</label>
+        <input type="text" id="dataAccessKey" name="dataAccessKey" style="width:240px;" ><br><br><hr><br>
 
-                <label for="fname">First name:</label>
-                <input type="text" id="fname" name="fname" value="Juan"><br><br>
+        <label for="fname">First name:</label>
+        <input type="text" id="fname" name="fname" value="Juan"><br><br>
 
-                <label for="lname">Last name:</label>
-                <input type="text" id="lname" name="lname" value="Andrade"><br><br>
+        <label for="lname">Last name:</label>
+        <input type="text" id="lname" name="lname" value="Andrade"><br><br>
 
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" style="width:340px;" value="@fastspring.com"><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" style="width:340px;" value="@fastspring.com"><br><br>
 
-                <div id="product-container">
-                    <label for="product1">Product:</label>
-                    <input type="text" id="product1" name="product1" class="product"><br><br>
-                </div>
-
-                <label for="paymentMethod">Payment Method:</label>
-                <input type="text" id="paymentMethod" name="paymentMethod" value="card"><br><br>
-
-                <label for="hidePaymentMethods">Hide other payment methods:</label>
-                <input type="checkbox" id="hidePaymentMethods" name="hidePaymentMethods"><br><br>
-
-                <label for="country">Country:</label>
-                <input type="text" id="country" name="country" style="width:40px;" value="US"><br><br>
-
-                <label for="postalCode">Postal Code:</label>
-                <input type="text" id="postalCode" name="postalCode" style="width:80px;"><br><br>
-            </form>
-            <button id="loadStorefront" onclick="loadStorefront()">Load Storefront</button>
-            <button id="addProduct" onclick="addProduct()" style="display: none;">Add another product</button>
-            <button id="secureCheckout" onclick="secureCheckout()" style="display:none;">Secure Checkout</button>
-            <button id="paymentCheckout" onclick="insecureCheckout()" style="display:none; margin-left: 8px;">Non-secure checkout</button><br>
-
-            <p id="errorMessage" style="color: red;margin-top:30px;font-size:17px;display:none;"></p>
-        </div>
-        <div id="fsc-embedded-checkout-container" style="width:900px;margin-left:60px; float:left;">
+        <div id="product-container">
+            <label for="product1">Product:</label>
+            <input type="text" id="product1" name="product1" class="product"><br><br>
         </div>
 
-    </body>
+        <label for="paymentMethod">Payment Method:</label>
+        <select name="paymentMethod" id="paymentMethod">
+            <option value="card">card</option>
+            <option value="wire">wire</option>
+            <option value="purchaseorder">invoice</option>
+            <option value="paypal">paypal</option>
+            <option value="amazon">amazon</option>
+            <option value="ach">ach</option>
+            <option value="ideal">ideal</option>
+            <option value="test">test</option>
+            <option value="free">free</option>
+            <option value="applepay">applepay</option>
+            <option value="alipay">alipay</option>
+            <option value="sepa">sepa</option>
+            <option value="sofort">sofort</option>
+            <option value="giropay">giropay</option>
+        </select><br><br>
+
+        <label for="hidePaymentMethods">Hide other payment methods:</label>
+        <input type="checkbox" id="hidePaymentMethods" name="hidePaymentMethods"><br><br>
+
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" style="width:40px;" value="US"><br><br>
+
+        <label for="postalCode">Postal Code:</label>
+        <input type="text" id="postalCode" name="postalCode" style="width:80px;"><br><br>
+    </form>
+    <button id="loadStorefront" onclick="loadStorefront()">Load Storefront</button>
+    <button id="addProduct" onclick="addProduct()" style="display: none;">Add another product</button>
+    <button id="secureCheckout" onclick="secureCheckout()" style="display:none;">Secure Checkout</button>
+    <button id="paymentCheckout" onclick="insecureCheckout()" style="display:none; margin-left: 8px;">Non-secure checkout</button><br>
+
+    <p id="errorMessage" style="color: red;margin-top:30px;font-size:17px;display:none;"></p>
+</div>
+<div id="fsc-embedded-checkout-container" style="width:900px;margin-left:60px; float:left;">
+</div>
+
+</body>
 </html>
