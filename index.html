@@ -53,6 +53,7 @@
         let hidePaymentMethods = document.getElementById("hidePaymentMethods").checked;
         let country = document.getElementById("country").value;
         let postalCode = document.getElementById('postalCode').value;
+        let tags = document.getElementById('tags').value;
 
         let payload = {
           "contact": {
@@ -62,6 +63,7 @@
             "country": country,
             "postalCode": postalCode
           },
+          "tags": tags,
           "language": "EN",
           "items": getProductsArray(),
           "paymentMethod": paymentMethod,
@@ -186,6 +188,9 @@
 
         <label for="postalCode">Postal Code:</label>
         <input type="text" id="postalCode" name="postalCode" style="width:80px;"><br><br>
+
+        <label for="tags">Tags:</label>
+        <input type="text" id="tags" name="tags" style="width:80px;"><br><br>
     </form>
     <button id="loadStorefront" onclick="loadStorefront()">Load Storefront</button>
     <button id="addProduct" onclick="addProduct()" style="display: none;">Add another product</button>
