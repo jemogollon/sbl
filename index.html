@@ -11,7 +11,7 @@
         script.type = 'text/javascript';
         script.src = document.getElementById('sblVersion').value;
         script.setAttribute('data-storefront', document.getElementById('storefrontURL').value);
-        script.setAttribute('data-access-key', document.getElementById('dataAccessKey').value);
+        script.setAttribute('data-access-key', document.getElementById('dataAccessKey').value.trim());
         script.setAttribute('data-continuous', 'true');
         script.setAttribute('data-data-callback', 'dataCallback');
         script.setAttribute('data-error-callback', 'dataErrorCallback');
