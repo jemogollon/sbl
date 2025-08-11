@@ -139,7 +139,9 @@
         let hiddenOptionsArray = [];
 
         for (let i = 0; i < hiddenPaymentMethods.length; ++i) {
-          hiddenOptionsArray[i] = hiddenPaymentMethods[i].value;
+          if (hiddenPaymentMethods[i].checked) {
+              hiddenOptionsArray.push(hiddenPaymentMethods[i].value);
+          }
         }
         return hiddenOptionsArray;
       }
