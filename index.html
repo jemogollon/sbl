@@ -67,7 +67,8 @@
           "language": "EN",
           "items": getProductsArray(),
           "paymentMethod": paymentMethod,
-          "hideOtherPaymentMethods": hidePaymentMethods
+          "hideOtherPaymentMethods": hidePaymentMethods,
+          "hidePaymentMethod": {"paypal"}
         };
 
         fetch('https://qa-validator-api.fastspring.com/address/encrypt',  {
