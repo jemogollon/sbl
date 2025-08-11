@@ -138,11 +138,11 @@
         let hiddenPaymentMethods = document.getElementsByName('hidden-options');
         let hiddenOptionsArray = [];
 
-        for (let i = 0; i < hiddenPaymentMethods.length; ++i) {
-          if (hiddenPaymentMethods[i].checked) {
-              hiddenOptionsArray.push(hiddenPaymentMethods[i].value);
+        hiddenPaymentMethods.forEach(hiddenPaymentMethod => {
+          if (hiddenPaymentMethod.checked) {
+            hiddenOptionsArray.push(hiddenPaymentMethod.value)
           }
-        }
+        });
         return hiddenOptionsArray;
       }
     </script>
