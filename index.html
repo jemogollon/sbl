@@ -68,7 +68,7 @@
           "items": getProductsArray(),
           "paymentMethod": paymentMethod,
           "hideOtherPaymentMethods": hidePaymentMethods,
-          "hidePaymentMethods": ["paypal"]
+          "hidePaymentMethods": getHiddenPaymentMethodsArray()
         };
 
         fetch('https://qa-validator-api.fastspring.com/address/encrypt',  {
@@ -132,6 +132,16 @@
           productsArray[i] = {"product": products[i].value};
         }
         return productsArray;
+      }
+
+      function getHiddenPaymentMethodsArray() {
+        let hiddenPaymentMethods = document.getElementsByName('hidden-options');
+        let hiddenOptionsArray = [];
+
+        for (let i = 0; i < hiddenPaymentMethods.length; ++i) {
+          hiddenOptionsArray[i] = hiddenPaymentMethods[i].value;
+        }
+        return hiddenOptionsArray;
       }
     </script>
 </head>
@@ -197,6 +207,27 @@
 
         <label for="tags">Tags:</label>
         <input type="text" id="tags" name="tags" style="width:340px;"><br><br>
+
+        <label for="hide-payment-methods">HidePaymentMethods:</label>
+        <div id="hide-payment-methods">
+            <input type="checkbox" id="card-hidden" name="hidden-options" value="card">
+            <label for="card-hidden">card</label>
+
+            <input type="checkbox" id="wire-hidden" name="hidden-options" value="wire">
+            <label for="wire-hidden">wire</label>
+
+            <input type="checkbox" id="purchaseorder-hidden" name="hidden-options" value="purchaseorder">
+            <label for="purchaseorder-hidden">purchaseorder</label>
+
+            <input type="checkbox" id="paypal-hidden" name="hidden-options" value="paypal">
+            <label for="paypal-hidden">paypal</label>
+
+            <input type="checkbox" id="amazon-hidden" name="hidden-options" value="amazon">
+            <label for="amazon-hidden">amazon</label>
+
+            <input type="checkbox" id="ach-hidden" name="hidden-options" value="ach">
+            <label for="ach-hidden">ach</label>
+        </div>
     </form>
     <button id="loadStorefront" onclick="loadStorefront()">Load Storefront</button>
     <button id="addProduct" onclick="addProduct()" style="display: none;">Add another product</button>
