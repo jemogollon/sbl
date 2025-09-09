@@ -119,6 +119,15 @@
         productInput.className = 'product';
         productContainer.appendChild(productInput);
 
+        let priceInput = document.createElement('input');
+        priceInput.id = 'price' + productNumber;
+        priceInput.name = 'price' + productNumber;
+        priceInput.className = 'price';
+        priceInput.style = "width: 125px; margin-left: 5px;";
+        priceInput.type = "number";
+        priceInput.placeholder = "price (optional)";
+        productContainer.appendChild(priceInput);
+
         productContainer.appendChild(document.createElement('br'));
         productContainer.appendChild(document.createElement('br'));
         productNumber++;
@@ -130,6 +139,9 @@
 
         for (let i = 0; i < products.length; ++i) {
           productsArray[i] = {"product": products[i].value};
+          if (prices[i].value) {
+            productsArray[i].pricing = {"price": {"USD": prices[i].value}};
+          }
         }
         return productsArray;
       }
@@ -170,7 +182,8 @@
 
         <div id="product-container">
             <label for="product1">Product:</label>
-            <input type="text" id="product1" name="product1" class="product"><br><br>
+            <input type="text" id="product1" name="product1" class="product">
+            <input type="number" id="price1" placeholder="price (optional)" name="price1" class="price" style="width: 125px; margin-left: 5px;"><br><br>
         </div>
 
         <label for="paymentMethod">Payment Method:</label>
