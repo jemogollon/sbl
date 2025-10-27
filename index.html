@@ -54,6 +54,7 @@
         let country = document.getElementById("country").value;
         let postalCode = document.getElementById('postalCode').value;
         let tags = document.getElementById('tags').value;
+        let paymentMethodOrder = document.getElementById('paymentMethodOrder').value;
 
         let payload = {
           "contact": {
@@ -68,7 +69,8 @@
           "items": getProductsArray(),
           "paymentMethod": paymentMethod,
           "hideOtherPaymentMethods": hidePaymentMethods,
-          "hidePaymentMethods": getHiddenPaymentMethodsArray()
+          "hidePaymentMethods": getHiddenPaymentMethodsArray(),
+          "paymentMethodOrder": paymentMethodOrder ? paymentMethodOrder.trim().split(',') : null
         };
 
         fetch('https://qa-validator-api.fastspring.com/address/encrypt',  {
@@ -224,6 +226,9 @@
 
         <label for="tags">Tags:</label>
         <input type="text" id="tags" name="tags" style="width:340px;"><br><br>
+        
+        <label for="paymentMethodOrder">Payment Method Order:</label>
+        <input type="text" id="paymentMethodOrder" name="paymentMethodOrder" style="width:340px;"><br><br>
 
         <label for="hide-payment-methods">Hide Payment Methods:</label>
         <div id="hide-payment-methods">
