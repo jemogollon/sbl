@@ -64,7 +64,7 @@
             "country": country,
             "postalCode": postalCode
           },
-          "tags": tags,
+          "tags": getTagsObject(tags),
           "language": "EN",
           "items": getProductsArray(),
           "paymentMethod": paymentMethod,
@@ -133,7 +133,19 @@
         productContainer.appendChild(document.createElement('br'));
         productNumber++;
       }
-
+        
+        function getTagsObject(tags) {
+            if (tags) {
+              try {
+                let tagsJson = JSON.parse(tags);
+                return tagsJson;
+              } catch (e) {
+                console.error("ERROR: invalid tags object. make sure you're providing a valid json (without escaping the quotation marks)")
+              }
+            }
+            return null;
+          }
+        
       function getProductsArray() {
         let products = document.getElementsByClassName('product');
         let prices = document.getElementsByClassName('price');
