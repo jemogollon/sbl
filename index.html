@@ -81,7 +81,6 @@
           body: JSON.stringify(payload),
         }).then(response => response.json())
           .then(json => {
-            console.log(json);
             fastspring.builder.secure(json.response.securePayload, json.response.secureKey);
             fastspring.builder.checkout();
             fastspring.builder.update(product, 1);
