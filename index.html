@@ -55,6 +55,7 @@
         let postalCode = document.getElementById('postalCode').value;
         let tags = document.getElementById('tags').value;
         let paymentMethodOrder = document.getElementById('paymentMethodOrder').value;
+        let account = document.getElementById("account").value;
 
         let payload = {
           "contact": {
@@ -66,6 +67,7 @@
           },
           "tags": getTagsObject(tags),
           "language": "EN",
+          "account": account,
           "items": getProductsArray(),
           "paymentMethod": paymentMethod,
           "hideOtherPaymentMethods": hidePaymentMethods,
@@ -184,6 +186,9 @@
 
         <label id="data-access-key-label" for="dataAccessKey">Data access key:</label>
         <input type="text" id="dataAccessKey" name="dataAccessKey" style="width:240px;" ><br><br><hr><br>
+        
+        <label for="account">Account:</label>
+        <input type="text" id="account" name="account" value=""><br><br>
 
         <label for="fname">First name:</label>
         <input type="text" id="fname" name="fname" value="John"><br><br>
