@@ -56,6 +56,7 @@
         let tags = document.getElementById('tags').value;
         let paymentMethodOrder = document.getElementById('paymentMethodOrder').value;
         let account = document.getElementById("account").value;
+        let cpfNumber = document.getElementById("cpfNumber").value;
 
         let payload = {
           "contact": {
@@ -72,7 +73,8 @@
           "paymentMethod": paymentMethod,
           "hideOtherPaymentMethods": hidePaymentMethods,
           "hidePaymentMethods": getHiddenPaymentMethodsArray(),
-          "paymentMethodOrder": paymentMethodOrder ? paymentMethodOrder.trim().split(',') : null
+          "paymentMethodOrder": paymentMethodOrder ? paymentMethodOrder.trim().split(',') : null,
+          "cpfNumber": cpfNumber ? cpfNumber.trim() : null
         };
 
         fetch('https://qa-validator-api.fastspring.com/address/encrypt',  {
@@ -241,6 +243,9 @@
 
         <label for="postalCode">Postal Code:</label>
         <input type="text" id="postalCode" name="postalCode" style="width:80px;"><br><br>
+
+        <label for="cpfNumber">CPF Number:</label>
+        <input type="text" id="cpfNumber" name="cpfNumber" style="width:200px;"><br><br>
 
         <label for="tags">Tags:</label>
         <input type="text" id="tags" name="tags" style="width:340px;"><br><br>
